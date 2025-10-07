@@ -15,47 +15,60 @@ To write a program to predict the marks scored by a student using the simple lin
 
 ## Program:
 ```
+# Import libraries
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error, r2_score
 
-# Sample data
-X = np.array([1, 2, 3, 4, 5])
-Y = np.array([2, 4, 5, 4, 5])
+# Sample dataset: Hours Studied vs Marks Scored
+data = {
+    'Hours_Studied': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+    'Marks_Scored': [20, 22, 34, 38, 46, 52, 58, 62, 70, 78]
+}
 
+# Convert to DataFrame
+df = pd.DataFrame(data)
 
-m = 0        
-c = 0        
-L = 0.01     
-epochs = 1000  
+# Features and target
+X = df[['Hours_Studied']]   # Feature must be 2D
+y = df['Marks_Scored']
 
-n = float(len(X))  
+# Split the data (80% train, 20% test)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
+# Initialize and train the model
+model = LinearRegression()
+model.fit(X_train, y_train)
 
-for i in range(epochs):
-    Y_pred = m * X + c  
-    D_m = (-2/n) * sum(X * (Y - Y_pred))  
-    D_c = (-2/n) * sum(Y - Y_pred)        
-    m = m - L * D_m   
-    c = c - L * D_c  
+# Predict
+y_pred = model.predict(X_test)
 
-print(f"Final slope (m): {m}")
-print(f"Final intercept (c): {c}")
+# Print coefficients
+print("Slope (m):", model.coef_[0])
+print("Intercept (b):", model.intercept_)
 
+# Evaluate the model
+print("Mean Squared Error (MSE):", mean_squared_error(y_test, y_pred))
+print("R² Score:", r2_score(y_test, y_pred))
 
-Y_pred = m * X + c
-
-plt.scatter(X, Y, color="red", label="Data Points")
-plt.plot(X, Y_pred, color="blue", label="Best Fit Line")
-plt.xlabel("X")
-plt.ylabel("Y")
+# Plotting the regression line
+plt.scatter(X, y, color='blue', label='Actual Data')
+plt.plot(X, model.predict(X), color='red', label='Regression Line')
+plt.xlabel('Hours Studied')
+plt.ylabel('Marks Scored')
+plt.title('Simple Linear Regression: Marks vs Hours')
 plt.legend()
-plt.title("Linear Regression using Gradient Descent")
+plt.grid(True)
 plt.show()
+
 ```
 
 ## Output:
-![simple linear regression model for predicting the marks scored](sam.png)
-<img width="897" height="626" alt="Screenshot 2025-10-06 221438" src="https://github.com/user-attachments/assets/5bd24f3f-8a1d-4abd-8470-0fa1586607ab" />
+<img width="872" height="797" alt="image" src="https://github.com/user-attachments/assets/a4f8738e-9cf4-4f20-8b60-455eabd1ea75" />
+
 
 
 ## Result:
